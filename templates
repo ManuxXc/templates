@@ -1,0 +1,99 @@
+#include <iostream>
+using namespace std;
+
+template<typename T>
+class DynamicArray {
+private:
+    T *data;
+    int size;
+
+public:
+    DynamicArray() {
+        this->size = 0;
+        data = new T[0];
+    }
+
+    DynamicArray(T arr[], int size) {
+        this->size = size;
+        data = new T[size];
+        for(int i = 0; i < size; i++) {
+            data[i] = arr[i];
+        }
+    }
+
+    DynamicArray(const DynamicArray &n) {
+        this->size = n.size;
+        data = new T[size];
+        for(int i = 0; i < size; i++) {
+            data[i] = n.data[i];
+        }
+    }
+
+    void print() const {
+        cout << "[ ";
+        for(int i = 0; i < size; i++) {
+            cout << data[i] << " ";
+        }
+        cout << "]";
+    }
+
+    ~DynamicArray() {
+        delete[] data;
+    }
+
+    void pushback(T val) {
+        this->size++;
+        T *temp = new T[size];
+        temp[0] = val;
+        for(int i = 1; i < size; i++) {
+            temp[i] = data[i - 1];
+        }
+        delete[] data;
+        data = temp;
+    }
+
+    void insert(T val, int pos) {
+        this->size++;
+        T *temp = new T[size];
+        pos--;
+        int j = 0;
+        temp[pos] = val;
+        for(int i = 0; i < size; i++) {
+            if (i == pos) {
+                j = 1;
+            }
+            else {
+                temp[i] = data[i - j];
+            }
+        }
+        delete[] data;
+        data = temp;
+    }
+
+    void remove(int pos) {
+        this->size--;
+        T *temp = new T[size];
+        pos--;
+        int j = 0;
+        for(int i = 0; i < size; i++) {
+            if (i == pos) {
+                j = 1;
+            }
+            else {
+                temp[i] = data[i + j];
+            }
+        }
+        delete[] data;
+        data = temp;
+    }
+};
+
+int main() {
+    int arry[7] = { 1, 8, 9, 5, 3, 6, 8 };
+    DynamicArray<int> DIA(arry, 5);
+    DIA.pushback(10);
+    DIA.insert(9, 5);
+    DIA.remove(5);
+    DIA.print();
+    return 0;
+}
